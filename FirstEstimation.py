@@ -26,7 +26,8 @@ beta_L = 1
 alpha = 1.2
 
 #how the M group lose its saving and moves to H group
-eta = 1/14
+eta_MH = 1/14
+eta_ML = 1/14
 
 #how they enter the L group!
 epsilon = 0.001
@@ -38,15 +39,15 @@ def pandemic(k,t):
     S_L = k[2]
     I_H = k[3]
     I_M = k[4]
-    I_L = k[5]
+    I_L = k[5]  
     
-    dS_Hdt = -beta_H * (alpha * I_H + I_M + I_L) * (S_H + S_M + S_L)
-    dS_Mdt = -beta_M * (alpha * I_M + I_H + I_L) * (S_H + S_M + S_L)
-    dS_Ldt = -beta_L * (alpha * I_L + I_H + I_M) * (S_H + S_M + S_L)
+    dS_Hdt = -beta_H * (alpha * I_H +         I_M +         I_L) * S_H +  eta_MH * S_M
+    dS_Mdt = -beta_M * (        I_H + alpha * I_M +         I_L) * S_M - (eta_MH + eta_ML) * S_M
+    dS_Ldt = -beta_L * (        I_H +         I_M + alpha * I_L) * S_L +  eta_ML * S_M
     
-    dI_Hdt = beta_H * (alpha * I_H + I_M + I_L) * (S_H + S_M + S_L) - gamma_H * I_H + eta * I_M
-    dI_Mdt = beta_M * (alpha * I_M + I_H + I_L) * (S_H + S_M + S_L) - gamma_M * I_M - eta * I_M -  epsilon * I_M
-    dI_Ldt = beta_L * (alpha * I_L + I_H + I_M) * (S_H + S_M + S_L) - gamma_L * I_L + epsilon * I_M
+    dI_Hdt =  beta_H * (alpha * I_H +         I_M +         I_L) * S_H - gamma_H * I_H 
+    dI_Mdt =  beta_M * (        I_H + alpha * I_M +         I_L) * S_M - gamma_M * I_M 
+    dI_Ldt =  beta_L * (        I_H +         I_M + alpha * I_L) * S_L - gamma_L * I_L 
     
     return [dS_Hdt, dS_Mdt, dS_Ldt, dI_Hdt, dI_Mdt, dI_Ldt]
 
